@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">AutoInit</string>
+    <string name="wellInit">AutoInit works well</string>
+    <string name="badInit">Somethings goes bad with AutoInit</string>
+</resources>
