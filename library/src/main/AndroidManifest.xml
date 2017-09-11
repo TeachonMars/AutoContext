@@ -5,7 +5,7 @@
     <application android:label="@string/app_name">
 
         <provider
-            android:name=".AutoInit"
+            android:name="com.teachonmars.module.autoContext.AutoInit"
             android:authorities="${applicationId}.AutoInit"
             android:enabled="true"
             android:exported="false" />

@@ -10,11 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <meta-data
-            android:name="ContextNeedy"
-            android:value="com.teachonmars.autoinit.appDemo.AutoInitTester" />
-
-        <activity android:name="com.teachonmars.autoinit.appDemo.DemoActivity">
+        <activity android:name="com.teachonmars.module.autoContext.appDemo.DemoActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

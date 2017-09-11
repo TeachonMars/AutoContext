@@ -1,9 +1,11 @@
-package com.teachonmars.autoinit.appDemo;
+package com.teachonmars.module.autoContext.appDemo;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
+
+import com.teachonmars.autoinit.appDemo.R;
 
 
 public class DemoActivity extends AppCompatActivity {

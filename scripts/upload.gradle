@@ -1,0 +1,51 @@
+apply plugin: 'maven'
+
+version = VERSION_NAME
+group = GROUP
+
+afterEvaluate { project ->
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                pom.artifactId = artifactName
+
+                repository(url: "http://localhost:8081/artifactory/gradle-release-local") {
+                    authentication(userName: "admin", password: "admin")
+                }
+
+                pom.project {
+                }
+            }
+        }
+    }
+
+    def isAndroidProject = project.plugins.hasPlugin('com.android.application') || project.plugins.hasPlugin('com.android.library')
+
+    if (isAndroidProject) {
+
+        task androidSourcesJar(type: Jar) {
+            classifier = 'sources'
+            from project.android.sourceSets.main.java.source
+            baseName "${project.name}"
+        }
+
+        task androidLibraryJar(type: Jar, dependsOn: compileReleaseJavaWithJavac /* == variant.javaCompile */) {
+            from compileReleaseJavaWithJavac.destinationDir
+            exclude '**/R.class'
+            exclude '**/BuildConfig.class'
+            exclude '**/R$*.class'
+            baseName "${project.name}"
+        }
+
+        artifacts {
+            archives androidLibraryJar
+        }
+    } else if (project.plugins.hasPlugin('java')) {
+
+        artifacts {
+            components.java
+        }
+    }
+    logger.info("Published artifacts in ${configurations.archives}:")
+    configurations.archives.artifacts.files.files.each { logger.info("\t$it"); }
+}

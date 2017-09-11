@@ -21,4 +21,5 @@ android {
 dependencies {
     compile 'com.android.support:appcompat-v7:26.+'
     compile project(path: ':library')
+    annotationProcessor project(path: ':annotation:compiler')
 }

@@ -1,4 +1,4 @@
-package com.teachonmars.autoinit;
+package com.teachonmars.module.autoContext;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -9,28 +9,22 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import org.jetbrains.annotations.Nullable;
+import com.teachonmars.module.autoContext.annotation.Constant;
 
-import java.util.ArrayList;
+import org.jetbrains.annotations.Nullable;
 
 public class AutoInit extends ContentProvider {
     private static final String TAG = AutoInit.class.getSimpleName();
 
     @Override
     public boolean onCreate() {
-        provideRequiredContext();
-        return true;
-    }
-
-    private void provideRequiredContext() {
-        ArrayList<Class<? extends ContextNeedy>> needyClasses = ManifestParser.parse(getContext(), ContextNeedy.class);
-        for (Class needyClass : needyClasses) {
-            try {
-                ((ContextNeedy) needyClass.newInstance()).init(getContext());
-            } catch (Exception e) { //InstantiationException | IllegalAccessException
-                Log.e(TAG, "Can't init " + needyClass.getCanonicalName(), e);
-            }
+        try {
+            Class<?> contextNeedy = Class.forName(Constant.buildedClassName);
+            contextNeedy.getMethod(Constant.buildedClassMain, Context.class).invoke(null, getContext());
+        } catch (Exception e) {
+            Log.e(TAG, "Generated code can't be found or executed, add @NeedContext to desired static method with Context as unique parameter", e);
         }
+        return true;
     }
 
     @Override
@@ -38,7 +32,7 @@ public class AutoInit extends ContentProvider {
         if (providerInfo == null) {
             throw new NullPointerException("AppLife ProviderInfo cannot be null.");
         }
-        if ("com.teachonmars.autoinit.AutoInit".equals(providerInfo.authority)) {
+        if (AutoInit.class.getCanonicalName().equals(providerInfo.authority)) {
             throw new IllegalStateException("Incorrect provider authority : set applicationId in application\'s build.gradle.");
         }
         super.attachInfo(context, providerInfo);
