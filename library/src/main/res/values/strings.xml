@@ -1,5 +1,4 @@
 <resources>
-    <string name="autoContext_libName">AutoContext</string>
     <string name="autoContext_error_renameAuthority">Incorrect provider authority : set applicationId in application\'s build.gradle</string>
     <string name="autoContext_error_generatedCode">Generated code can\'t be found or executed, add @NeedContext to desired static method with Context as unique parameter</string>
     <string name="autoContext_error_NoProvider">AutoContext ProviderInfo cannot be null</string>

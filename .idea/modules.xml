@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/AutoInit.iml" filepath="$PROJECT_DIR$/AutoInit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AutoContext.iml" filepath="$PROJECT_DIR$/AutoContext.iml" />
       <module fileurl="file://$PROJECT_DIR$/annotation/annotation.iml" filepath="$PROJECT_DIR$/annotation/annotation.iml" />
       <module fileurl="file://$PROJECT_DIR$/appDemo/appDemo.iml" filepath="$PROJECT_DIR$/appDemo/appDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/annotation/compiler/compiler.iml" filepath="$PROJECT_DIR$/annotation/compiler/compiler.iml" />

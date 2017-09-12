@@ -1,9 +1,7 @@
 <manifest package="com.teachonmars.module.autoContext"
-
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <application android:label="@string/autoContext_libName">
-
+    <application>
         <provider
             android:name="com.teachonmars.module.autoContext.AutoContext"
             android:authorities="${applicationId}.AutoContext"
