@@ -20,7 +20,6 @@
  * For faster runs add: -x check
  *
  */
-apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven'
 
 version = VERSION_NAME
@@ -29,7 +28,6 @@ group = GROUP
 def MAVEN_REPO_URL = "http://localhost:8081/artifactory/gradle-release-local"
 def MAVEN_REPO_USERNAME = "admin"
 def MAVEN_REPO_PASSWORD = "admin"
-
 afterEvaluate { project ->
     uploadArchives {
         repositories {
@@ -38,6 +36,7 @@ afterEvaluate { project ->
                 repository(url: MAVEN_REPO_URL) {
                     authentication(userName: MAVEN_REPO_USERNAME, password: MAVEN_REPO_PASSWORD)
                 }
+
             }
         }
     }
@@ -60,7 +59,12 @@ afterEvaluate { project ->
         }
 
         artifacts {
-            archives androidLibraryJar
+            if (POM_PACKAGING == "aar") {
+                "${buildDir}/outputs/aar/${ARTIFACT_NAME}-release.aar"
+            } else {
+                archives androidLibraryJar
+            }
+
         }
     } else if (project.plugins.hasPlugin('java')) {
         artifacts {
