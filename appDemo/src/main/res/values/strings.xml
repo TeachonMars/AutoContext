@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">AutoContext</string>
+    <string name="wellInit">AutoContext works well</string>
+    <string name="badInit">Somethings goes bad with AutoContext</string>
+</resources>

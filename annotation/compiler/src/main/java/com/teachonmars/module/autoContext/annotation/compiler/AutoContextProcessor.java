@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,14 +26,12 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 
 @AutoService(Processor.class)
-public class AutoInitProcessor extends AbstractProcessor {
+public class AutoContextProcessor extends AbstractProcessor {
     private HashMap<Integer, List<Element>> methodList = new HashMap<>();
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        Set<String> result = new HashSet<>();
-        result.add(NeedContext.TAG);
-        return Collections.unmodifiableSet(result);
+        return Collections.singleton(NeedContext.TAG);
     }
 
     @Override
@@ -84,10 +81,10 @@ public class AutoInitProcessor extends AbstractProcessor {
         if (!methodList.isEmpty()) {
             TypeSpec.Builder classFile = createFile();
             MethodSpec.Builder mainMethod = createMainMethod();
-            for (Map.Entry<Integer, List<Element>> methodToCall : methodList.entrySet()) {
-                String name = Constant.baseNameCommonMethod + methodToCall.getKey();
+            for (Map.Entry<Integer, List<Element>> priorityMethodsPair : methodList.entrySet()) {
+                String name = Constant.baseNameCommonMethod + priorityMethodsPair.getKey();
                 MethodSpec.Builder method = buildMethod(name);
-                List<Element> priorityList = methodToCall.getValue();
+                List<Element> priorityList = priorityMethodsPair.getValue();
                 for (Element element : priorityList) {
                     addCall(method, element);
                 }

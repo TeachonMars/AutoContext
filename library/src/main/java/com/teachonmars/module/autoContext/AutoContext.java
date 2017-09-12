@@ -13,8 +13,8 @@ import com.teachonmars.module.autoContext.annotation.Constant;
 
 import org.jetbrains.annotations.Nullable;
 
-public class AutoInit extends ContentProvider {
-    private static final String TAG = AutoInit.class.getSimpleName();
+public class AutoContext extends ContentProvider {
+    private static final String TAG = AutoContext.class.getSimpleName();
 
     @Override
     public boolean onCreate() {
@@ -22,7 +22,7 @@ public class AutoInit extends ContentProvider {
             Class<?> contextNeedy = Class.forName(Constant.buildedClassName);
             contextNeedy.getMethod(Constant.buildedClassMain, Context.class).invoke(null, getContext());
         } catch (Exception e) {
-            Log.e(TAG, "Generated code can't be found or executed, add @NeedContext to desired static method with Context as unique parameter", e);
+            Log.e(TAG, getContext().getString(R.string.autoContext_error_generatedCode), e);
         }
         return true;
     }
@@ -30,10 +30,10 @@ public class AutoInit extends ContentProvider {
     @Override
     public void attachInfo(Context context, ProviderInfo providerInfo) {
         if (providerInfo == null) {
-            throw new NullPointerException("AppLife ProviderInfo cannot be null.");
+            throw new NullPointerException(context.getString(R.string.autoContext_error_NoProvider));
         }
-        if (AutoInit.class.getCanonicalName().equals(providerInfo.authority)) {
-            throw new IllegalStateException("Incorrect provider authority : set applicationId in application\'s build.gradle.");
+        if (AutoContext.class.getCanonicalName().equals(providerInfo.authority)) {
+            throw new IllegalStateException(context.getString(R.string.autoContext_error_renameAuthority));
         }
         super.attachInfo(context, providerInfo);
     }

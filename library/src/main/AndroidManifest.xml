@@ -1,12 +1,12 @@
-<manifest package="com.teachonmars.autoinit"
+<manifest package="com.teachonmars.module.autoContext"
 
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <application android:label="@string/app_name">
+    <application android:label="@string/autoContext_libName">
 
         <provider
-            android:name="com.teachonmars.module.autoContext.AutoInit"
-            android:authorities="${applicationId}.AutoInit"
+            android:name="com.teachonmars.module.autoContext.AutoContext"
+            android:authorities="${applicationId}.AutoContext"
             android:enabled="true"
             android:exported="false" />
     </application>

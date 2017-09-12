@@ -1,2 +1,2 @@
 include ':annotation', ':annotation:compiler'
-include ':library', ':app'
+include ':library', ':appDemo'
