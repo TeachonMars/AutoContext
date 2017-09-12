@@ -34,7 +34,7 @@ afterEvaluate { project ->
     uploadArchives {
         repositories {
             mavenDeployer {
-                pom.artifactId = artifactName
+                pom.artifactId = ARTIFACT_NAME
                 repository(url: MAVEN_REPO_URL) {
                     authentication(userName: MAVEN_REPO_USERNAME, password: MAVEN_REPO_PASSWORD)
                 }
@@ -67,7 +67,6 @@ afterEvaluate { project ->
             components.java
         }
     }
-
 
     logger.info("Published artifacts in ${configurations.archives}:")
     configurations.archives.artifacts.files.files.each { logger.info("\t$it"); }
