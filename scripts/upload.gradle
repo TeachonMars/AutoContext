@@ -59,7 +59,8 @@ afterEvaluate { project ->
         }
 
         artifacts {
-            if (POM_PACKAGING == "aar") {
+            if (project.hasProperty("POM_PACKAGING") &&
+                    POM_PACKAGING.equalsIgnoreCase("aar")) {
                 "${buildDir}/outputs/aar/${ARTIFACT_NAME}-release.aar"
             } else {
                 archives androidLibraryJar
