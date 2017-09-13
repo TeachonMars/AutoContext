@@ -9,8 +9,10 @@ buildscript {
 }
 
 allprojects {
+    apply from: "${rootProject.rootDir}/scripts/tomRepo.gradle"
     repositories {
         jcenter()
+        tomRepo()
     }
 }
 
