@@ -7,11 +7,10 @@ import android.content.pm.ProviderInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.teachonmars.module.autoContext.annotation.Constant;
-
-import org.jetbrains.annotations.Nullable;
 
 public class AutoContext extends ContentProvider {
     private static final String TAG = AutoContext.class.getSimpleName();
