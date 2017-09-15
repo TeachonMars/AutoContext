@@ -24,7 +24,7 @@ apply plugin: 'maven'
 
 version = VERSION_NAME
 group = GROUP
-
+//LOCAL TEST
 def MAVEN_REPO_URL = "http://localhost:8081/artifactory/gradle-release-local"
 def MAVEN_REPO_USERNAME = "admin"
 def MAVEN_REPO_PASSWORD = "admin"
@@ -35,6 +35,39 @@ afterEvaluate { project ->
                 pom.artifactId = ARTIFACT_NAME
                 repository(url: MAVEN_REPO_URL) {
                     authentication(userName: MAVEN_REPO_USERNAME, password: MAVEN_REPO_PASSWORD)
+                }
+
+                pom.project {
+                    name = ARTIFACT_NAME
+                    description = POM_DESCRIPTION
+                    url = POM_URL
+
+                    scm {
+                        url POM_SCM_URL
+                        connection POM_SCM_CONNECTION
+                        developerConnection POM_SCM_DEV_CONNECTION
+                    }
+
+                    licenses {
+                        license {
+                            name = POM_LICENSE_NAME
+                            url = POM_LICENSE_URL
+                            distribution = POM_LICENSE_DISTRIBUTION
+                        }
+                    }
+
+                    organization {
+                        name POM_ORGANIZATION_NAME
+                        url POM_ORGANIZATION_URL
+                    }
+
+                    developers {
+                        developer {
+                            id = POM_DEVELOPER_ID
+                            name = POM_DEVELOPER_NAME
+                            email = POM_DEVELOPER_EMAIL
+                        }
+                    }
                 }
 
             }

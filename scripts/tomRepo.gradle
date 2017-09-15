@@ -11,3 +11,12 @@ repositories.ext.tomRepo = {
         }
     }
 }
+project.buildscript.repositories.ext.altRepo = {
+    project.buildscript.repositories.maven {
+        url MAVEN_REPO_URL
+        credentials {
+            username = MAVEN_REPO_USERNAME
+            password = MAVEN_REPO_PASSWORD
+        }
+    }
+}
