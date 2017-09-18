@@ -25,6 +25,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.tools.Diagnostic;
 
 @AutoService(Processor.class)
 public class AutoContextProcessor extends AbstractProcessor {
@@ -87,28 +88,40 @@ public class AutoContextProcessor extends AbstractProcessor {
         if (!methodList.isEmpty()) {
             TypeSpec.Builder classFile = createFile();
             MethodSpec.Builder mainMethod = createMainMethod();
+            Map.Entry<Integer, List<Element>> tmp = null;
             for (Map.Entry<Integer, List<Element>> priorityMethodsPair : methodList.entrySet()) {
-                String name = Constant.baseNameCommonMethod + priorityMethodsPair.getKey();
-                MethodSpec.Builder method = buildMethod(name);
-                List<Element> priorityList = priorityMethodsPair.getValue();
-                for (Element element : priorityList) {
-                    addCall(method, element);
+                if (priorityMethodsPair.getKey() != 0) {
+                    addCodeByPriority(classFile, mainMethod, priorityMethodsPair);
+                } else {
+                    tmp = priorityMethodsPair;
                 }
-                mainMethod.addStatement("$L($L)", name, Constant.contextParameter);
-                classFile.addMethod(method.build());
+            }
+            if (tmp != null) {
+                addCodeByPriority(classFile, mainMethod, tmp);
             }
             TypeSpec classToWrite = finaliseClass(classFile, mainMethod.build());
             writeClass(classToWrite);
         }
     }
 
+    private void addCodeByPriority(TypeSpec.Builder classFile, MethodSpec.Builder mainMethod, Map.Entry<Integer, List<Element>> priorityMethodsPair) {
+        String name = Constant.baseNameCommonMethod + priorityMethodsPair.getKey();
+        MethodSpec.Builder method = buildMethod(name);
+        List<Element> priorityList = priorityMethodsPair.getValue();
+        for (Element element : priorityList) {
+            addCall(method, element);
+        }
+        mainMethod.addStatement("$L($L)", name, Constant.contextParameter);
+        classFile.addMethod(method.build());
+    }
+
     private TypeSpec.Builder createFile() {
-        return TypeSpec.classBuilder(Constant.baseBuildedClassName)
+        return TypeSpec.classBuilder(Constant.baseBuiltClassName)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
     }
 
     private MethodSpec.Builder createMainMethod() {
-        return MethodSpec.methodBuilder(Constant.buildedClassMain)
+        return MethodSpec.methodBuilder(Constant.builtClassMain)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(void.class)
                 .addParameter(Context.class, Constant.contextParameter);
@@ -126,7 +139,7 @@ public class AutoContextProcessor extends AbstractProcessor {
                     .build()
                     .writeTo(processingEnv.getFiler());
         } catch (IOException e) {
-            e.printStackTrace();
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Error while writing AutoContext generated class : " + e.getMessage());
         }
     }
 
