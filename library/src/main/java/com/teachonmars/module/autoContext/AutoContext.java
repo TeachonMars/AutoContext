@@ -18,8 +18,8 @@ public class AutoContext extends ContentProvider {
     @Override
     public boolean onCreate() {
         try {
-            Class<?> contextNeedy = Class.forName(Constant.buildedClassName);
-            contextNeedy.getMethod(Constant.buildedClassMain, Context.class).invoke(null, getContext());
+            Class<?> contextNeedy = Class.forName(Constant.builtClassName);
+            contextNeedy.getMethod(Constant.builtClassMain, Context.class).invoke(null, getContext());
         } catch (Exception e) {
             Log.e(TAG, getContext().getString(R.string.autoContext_error_generatedCode), e);
         }
