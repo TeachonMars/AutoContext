@@ -11,7 +11,7 @@ public @interface NeedContext {
     String TAG = NeedContext.class.getCanonicalName();
 
     /**
-     * Priority used to call the method which need context, from 1 (priority maximum) to {@link Integer#MAX_VALUE} (priority minimum before 0);
+     * @return Priority used to call the method which need context, from 1 (priority maximum) to {@link Integer#MAX_VALUE} (priority minimum before 0);
      * 0 is used as default and with less priority (call after all other priority)
      */
     int priority() default 0;

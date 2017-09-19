@@ -4,18 +4,43 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1"
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
     }
 }
 
 allprojects {
-    apply from: "${rootProject.rootDir}/scripts/tomRepo.gradle"
     repositories {
         jcenter()
-        tomRepo()
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+
+ext {
+    bintrayRepo = 'AutoContext'
+    bintrayName = 'AutoContext'
+
+    pomGroupId = 'com.teachonmars.module'
+    pomArtifactId = 'autoContext'
+    pomName = 'AutoContext'
+
+    pomDescription = 'Initialize statically any android class with application Context, by annotation process at compilation'
+
+    siteUrl = 'https://github.com/TeachonMars/AutoContext'
+    gitUrl = 'https://github.com/TeachonMars/AutoContext.git'
+
+    libraryVersion = '1.1.0'
+
+    developerId = 'benjaminVadon'
+    developerName = 'Benjamin Vadon'
+    developerEmail = 'development@teachonmars.com'
+    pomOrganizationName = 'teachonmars'
+    pomOrganizationUrl = 'https://teachonmars.com'
+    licenseName = 'The MIT License'
+    licenseUrl = 'https ://opensource.org/licenses/MIT'
+    allLicenses = ["MIT"]
 }
