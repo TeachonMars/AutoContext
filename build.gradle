@@ -24,7 +24,7 @@ ext {
     bintrayRepo = 'AutoContext'
     bintrayName = 'AutoContext'
 
-    pomGroupId = 'com.teachonmars.module'
+    pomGroupId = 'com.teachonmars.modules'
     pomArtifactId = 'autoContext'
     pomName = 'AutoContext'
 

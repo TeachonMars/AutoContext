@@ -13,11 +13,6 @@ version = libraryVersion
 if (project.hasProperty("android")) {
     task sourcesJar(type: Jar) {
         classifier = 'sources'
-        exclude '**/R.class'
-        exclude '**/BuildConfig.class'
-        exclude '**/R$*.class'
-        baseName "${project.name}"
-
         from android.sourceSets.main.java.srcDirs
     }
 
