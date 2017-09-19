@@ -8,7 +8,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 26
         versionCode 1
-        versionName VERSION_NAME
+        versionName libraryVersion
     }
     buildTypes {
         release {
@@ -23,4 +23,11 @@ dependencies {
     compile 'com.android.support:support-annotations:26.0.0-alpha1'
     compile project(':annotation')
 }
-apply from: "${rootProject.projectDir}/scripts/${uploadTask}"
+
+ext {
+    pomArtifactId = 'autoContext'
+    pomPackaging = 'aar'
+}
+
+apply from: "${rootProject.projectDir}/scripts/install.gradle"
+apply from: "${rootProject.projectDir}/scripts/bintray.gradle"
