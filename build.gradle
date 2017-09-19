@@ -33,7 +33,7 @@ ext {
     siteUrl = 'https://github.com/TeachonMars/AutoContext'
     gitUrl = 'https://github.com/TeachonMars/AutoContext.git'
 
-    libraryVersion = '1.1.0'
+    libraryVersion = '1.1.1'
 
     developerId = 'benjaminVadon'
     developerName = 'Benjamin Vadon'
