@@ -33,7 +33,7 @@ ext {
     siteUrl = 'https://github.com/TeachonMars/AutoContext'
     gitUrl = 'https://github.com/TeachonMars/AutoContext.git'
 
-    libraryVersion = '1.1.1'
+    libraryVersion = '1.1.2'
 
     developerId = 'benjaminVadon'
     developerName = 'Benjamin Vadon'
@@ -41,6 +41,6 @@ ext {
     pomOrganizationName = 'teachonmars'
     pomOrganizationUrl = 'https://teachonmars.com'
     licenseName = 'The MIT License'
-    licenseUrl = 'https ://opensource.org/licenses/MIT'
+    licenseUrl = 'https://opensource.org/licenses/MIT'
     allLicenses = ["MIT"]
 }
