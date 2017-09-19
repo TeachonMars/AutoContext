@@ -21,7 +21,7 @@ task clean(type: Delete) {
 
 
 ext {
-    bintrayRepo = 'AutoContext'
+    bintrayRepo = 'modules'
     bintrayName = 'AutoContext'
 
     pomGroupId = 'com.teachonmars.modules'
