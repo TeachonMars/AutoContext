@@ -1,4 +1,4 @@
-package com.teachonmars.module.autoContext.annotation.compiler;
+package com.teachonmars.modules.autoContext.annotation.compiler;
 
 
 import android.content.Context;
@@ -7,8 +7,6 @@ import com.google.auto.service.AutoService;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
-import com.teachonmars.module.autoContext.annotation.Constant;
-import com.teachonmars.module.autoContext.annotation.NeedContext;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,7 +31,7 @@ public class AutoContextProcessor extends AbstractProcessor {
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        return Collections.singleton(NeedContext.TAG);
+        return Collections.singleton(com.teachonmars.modules.autoContext.annotation.NeedContext.TAG);
     }
 
     @Override
@@ -52,7 +50,7 @@ public class AutoContextProcessor extends AbstractProcessor {
     }
 
     private void processClasses(RoundEnvironment roundEnvironment) {
-        Iterable<? extends Element> items = roundEnvironment.getElementsAnnotatedWith(NeedContext.class);
+        Iterable<? extends Element> items = roundEnvironment.getElementsAnnotatedWith(com.teachonmars.modules.autoContext.annotation.NeedContext.class);
         for (Element elem : items) {
             switch (elem.getKind()) {
 //                case CLASS:
@@ -69,7 +67,7 @@ public class AutoContextProcessor extends AbstractProcessor {
     private void handleMethod(Element elem) {
         Set<Modifier> modifiers = elem.getModifiers();
         if (modifiers.contains(Modifier.PUBLIC) && modifiers.contains(Modifier.STATIC)) {
-            int priority = elem.getAnnotation(NeedContext.class).priority();
+            int priority = elem.getAnnotation(com.teachonmars.modules.autoContext.annotation.NeedContext.class).priority();
             List<Element> priorityList = getListForPriority(priority);
             priorityList.add(elem);
         }
@@ -105,26 +103,26 @@ public class AutoContextProcessor extends AbstractProcessor {
     }
 
     private void addCodeByPriority(TypeSpec.Builder classFile, MethodSpec.Builder mainMethod, Map.Entry<Integer, List<Element>> priorityMethodsPair) {
-        String name = Constant.baseNameCommonMethod + priorityMethodsPair.getKey();
+        String name = com.teachonmars.modules.autoContext.annotation.Constant.baseNameCommonMethod + priorityMethodsPair.getKey();
         MethodSpec.Builder method = buildMethod(name);
         List<Element> priorityList = priorityMethodsPair.getValue();
         for (Element element : priorityList) {
             addCall(method, element);
         }
-        mainMethod.addStatement("$L($L)", name, Constant.contextParameter);
+        mainMethod.addStatement("$L($L)", name, com.teachonmars.modules.autoContext.annotation.Constant.contextParameter);
         classFile.addMethod(method.build());
     }
 
     private TypeSpec.Builder createFile() {
-        return TypeSpec.classBuilder(Constant.baseBuiltClassName)
+        return TypeSpec.classBuilder(com.teachonmars.modules.autoContext.annotation.Constant.baseBuiltClassName)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
     }
 
     private MethodSpec.Builder createMainMethod() {
-        return MethodSpec.methodBuilder(Constant.builtClassMain)
+        return MethodSpec.methodBuilder(com.teachonmars.modules.autoContext.annotation.Constant.builtClassMain)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(void.class)
-                .addParameter(Context.class, Constant.contextParameter);
+                .addParameter(Context.class, com.teachonmars.modules.autoContext.annotation.Constant.contextParameter);
     }
 
     private TypeSpec finaliseClass(TypeSpec.Builder classFile, MethodSpec mainMethod) {
@@ -135,7 +133,7 @@ public class AutoContextProcessor extends AbstractProcessor {
 
     private void writeClass(TypeSpec classFile) {
         try {
-            JavaFile.builder(Constant.basePackageName, classFile)
+            JavaFile.builder(com.teachonmars.modules.autoContext.annotation.Constant.basePackageName, classFile)
                     .build()
                     .writeTo(processingEnv.getFiler());
         } catch (IOException e) {
@@ -148,10 +146,10 @@ public class AutoContextProcessor extends AbstractProcessor {
                 .methodBuilder(name)
                 .addModifiers(Modifier.PRIVATE, Modifier.STATIC)
                 .returns(void.class)
-                .addParameter(Context.class, Constant.contextParameter);
+                .addParameter(Context.class, com.teachonmars.modules.autoContext.annotation.Constant.contextParameter);
     }
 
     private void addCall(MethodSpec.Builder method, Element element) {
-        method.addStatement("$T.$L($L)", element.getEnclosingElement().asType(), element.getSimpleName(), Constant.contextParameter);
+        method.addStatement("$T.$L($L)", element.getEnclosingElement().asType(), element.getSimpleName(), com.teachonmars.modules.autoContext.annotation.Constant.contextParameter);
     }
 }

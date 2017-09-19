@@ -1,9 +1,11 @@
-package com.teachonmars.module.autoContext.appDemo;
+package com.teachonmars.modules.autoContext.appDemo;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
+
+import com.teachonmars.module.autoContext.appDemo.R;
 
 public class DemoActivity extends AppCompatActivity {
     @Override

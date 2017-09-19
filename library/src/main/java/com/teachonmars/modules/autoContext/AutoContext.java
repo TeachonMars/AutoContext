@@ -1,4 +1,4 @@
-package com.teachonmars.module.autoContext;
+package com.teachonmars.modules.autoContext;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.teachonmars.module.autoContext.annotation.Constant;
+import com.teachonmars.modules.autoContext.annotation.Constant;
 
 public class AutoContext extends ContentProvider {
     private static final String TAG = AutoContext.class.getSimpleName();
