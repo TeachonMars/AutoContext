@@ -1,5 +1,6 @@
 package com.teachonmars.modules.autoContext;
 
+import android.app.Application;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,6 +12,13 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.teachonmars.modules.autoContext.annotation.Constant;
+import com.teachonmars.modules.autoContext.annotation.NeedContext;
+
+/**
+ * AutoContext class is called automatically by android system at application creation, before {@link Application#onCreate()} gets called.
+ * The {@link #onCreate()} method subsequently call auto-generated class ContextNeedy regrouping all
+ * calls to methods annotated with {@link NeedContext}
+ */
 
 public class AutoContext extends ContentProvider {
     private static final String TAG = AutoContext.class.getSimpleName();
