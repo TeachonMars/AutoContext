@@ -157,6 +157,6 @@ public class AutoContextProcessor extends AbstractProcessor {
     }
 
     private String buildNoPriorityMethodName() {
-        return "no" + Constant.baseNameCommonMethod.substring(0, 1).toUpperCase() + Constant.baseNameCommonMethod.substring(1)
+        return "no" + Constant.baseNameCommonMethod.substring(0, 1).toUpperCase() + Constant.baseNameCommonMethod.substring(1);
     }
 }
