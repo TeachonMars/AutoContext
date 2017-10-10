@@ -20,4 +20,11 @@ public class AutoContextTester {
         AutoContextTester.appContext = appContext;
         Log.d(TAG, "Context needer with prio 2");
     }
+
+    @NeedContext
+    public static void boob(Context appContext) {
+        AutoContextTester.appContext = appContext;
+        Log.d(TAG, "Context needer with prio default");
+    }
+
 }
