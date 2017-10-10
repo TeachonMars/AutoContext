@@ -7,6 +7,8 @@ import com.google.auto.service.AutoService;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import com.teachonmars.modules.autoContext.annotation.Constant;
+import com.teachonmars.modules.autoContext.annotation.NeedContext;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,13 +27,17 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 
+
+/**
+ * Class called at compilation time (of project using this library) to build ContextNeedy class, containing call to all public static methods annotated with {@link NeedContext}
+ */
 @AutoService(Processor.class)
 public class AutoContextProcessor extends AbstractProcessor {
     private HashMap<Integer, List<Element>> methodList = new HashMap<>();
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        return Collections.singleton(com.teachonmars.modules.autoContext.annotation.NeedContext.TAG);
+        return Collections.singleton(NeedContext.TAG);
     }
 
     @Override
@@ -50,7 +56,7 @@ public class AutoContextProcessor extends AbstractProcessor {
     }
 
     private void processClasses(RoundEnvironment roundEnvironment) {
-        Iterable<? extends Element> items = roundEnvironment.getElementsAnnotatedWith(com.teachonmars.modules.autoContext.annotation.NeedContext.class);
+        Iterable<? extends Element> items = roundEnvironment.getElementsAnnotatedWith(NeedContext.class);
         for (Element elem : items) {
             switch (elem.getKind()) {
 //                case CLASS:
@@ -67,7 +73,7 @@ public class AutoContextProcessor extends AbstractProcessor {
     private void handleMethod(Element elem) {
         Set<Modifier> modifiers = elem.getModifiers();
         if (modifiers.contains(Modifier.PUBLIC) && modifiers.contains(Modifier.STATIC)) {
-            int priority = elem.getAnnotation(com.teachonmars.modules.autoContext.annotation.NeedContext.class).priority();
+            int priority = elem.getAnnotation(NeedContext.class).priority();
             List<Element> priorityList = getListForPriority(priority);
             priorityList.add(elem);
         }
@@ -84,45 +90,64 @@ public class AutoContextProcessor extends AbstractProcessor {
 
     private void generateCode() {
         if (!methodList.isEmpty()) {
-            TypeSpec.Builder classFile = createFile();
+            TypeSpec.Builder classFile = createContextNeedyClassFile();
             MethodSpec.Builder mainMethod = createMainMethod();
-            Map.Entry<Integer, List<Element>> tmp = null;
-            for (Map.Entry<Integer, List<Element>> priorityMethodsPair : methodList.entrySet()) {
-                if (priorityMethodsPair.getKey() != 0) {
-                    addCodeByPriority(classFile, mainMethod, priorityMethodsPair);
-                } else {
-                    tmp = priorityMethodsPair;
-                }
-            }
-            if (tmp != null) {
-                addCodeByPriority(classFile, mainMethod, tmp);
-            }
-            TypeSpec classToWrite = finaliseClass(classFile, mainMethod.build());
-            writeClass(classToWrite);
+            addMethodsByPriority(classFile, mainMethod);
+            writeClass(finaliseClass(classFile, mainMethod.build()));
         }
     }
 
-    private void addCodeByPriority(TypeSpec.Builder classFile, MethodSpec.Builder mainMethod, Map.Entry<Integer, List<Element>> priorityMethodsPair) {
-        String name = com.teachonmars.modules.autoContext.annotation.Constant.baseNameCommonMethod + priorityMethodsPair.getKey();
-        MethodSpec.Builder method = buildMethod(name);
-        List<Element> priorityList = priorityMethodsPair.getValue();
-        for (Element element : priorityList) {
-            addCall(method, element);
+    private void addMethodsByPriority(TypeSpec.Builder classFile, MethodSpec.Builder mainMethod) {
+        List<Element> notPrioritizedMethods = methodList.remove(0);
+        for (Map.Entry<Integer, List<Element>> priorityMethodsPair : methodList.entrySet()) {
+            addSingleMethodByPriority(classFile, mainMethod, priorityMethodsPair.getValue(), Constant.baseNameCommonMethod + priorityMethodsPair.getKey());
         }
-        mainMethod.addStatement("$L($L)", name, com.teachonmars.modules.autoContext.annotation.Constant.contextParameter);
+        if (notPrioritizedMethods != null) {
+            addSingleMethodByPriority(classFile, mainMethod, notPrioritizedMethods, buildNoPriorityMethodName());
+        }
+    }
+
+    private void addSingleMethodByPriority(TypeSpec.Builder classFile, MethodSpec.Builder mainMethod, List<Element> methodList, String methodName) {
+        MethodSpec.Builder method = buildMethod(methodName);
+        for (Element element : methodList) {
+            addCallInClass(method, element);
+        }
+        mainMethod.addStatement("$L($L)", methodName, Constant.contextParameter);
         classFile.addMethod(method.build());
     }
 
-    private TypeSpec.Builder createFile() {
-        return TypeSpec.classBuilder(com.teachonmars.modules.autoContext.annotation.Constant.baseBuiltClassName)
+    private TypeSpec.Builder createContextNeedyClassFile() {
+        return TypeSpec.classBuilder(Constant.baseBuiltClassName)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
     }
 
     private MethodSpec.Builder createMainMethod() {
-        return MethodSpec.methodBuilder(com.teachonmars.modules.autoContext.annotation.Constant.builtClassMain)
+        return MethodSpec.methodBuilder(Constant.builtClassMain)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(void.class)
-                .addParameter(Context.class, com.teachonmars.modules.autoContext.annotation.Constant.contextParameter);
+                .addParameter(Context.class, Constant.contextParameter);
+    }
+
+    private MethodSpec.Builder buildMethod(String name) {
+        return MethodSpec
+                .methodBuilder(name)
+                .addModifiers(Modifier.PRIVATE, Modifier.STATIC)
+                .returns(void.class)
+                .addParameter(Context.class, Constant.contextParameter);
+    }
+
+    private void addCallInClass(MethodSpec.Builder method, Element element) {
+        method.addStatement("$T.$L($L)", element.getEnclosingElement().asType(), element.getSimpleName(), Constant.contextParameter);
+    }
+
+    private void writeClass(TypeSpec classFile) {
+        try {
+            JavaFile.builder(Constant.basePackageName, classFile)
+                    .build()
+                    .writeTo(processingEnv.getFiler());
+        } catch (IOException e) {
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Error while writing AutoContext generated class : " + e.getMessage());
+        }
     }
 
     private TypeSpec finaliseClass(TypeSpec.Builder classFile, MethodSpec mainMethod) {
@@ -131,25 +156,7 @@ public class AutoContextProcessor extends AbstractProcessor {
                 .build();
     }
 
-    private void writeClass(TypeSpec classFile) {
-        try {
-            JavaFile.builder(com.teachonmars.modules.autoContext.annotation.Constant.basePackageName, classFile)
-                    .build()
-                    .writeTo(processingEnv.getFiler());
-        } catch (IOException e) {
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Error while writing AutoContext generated class : " + e.getMessage());
-        }
-    }
-
-    private MethodSpec.Builder buildMethod(String name) {
-        return MethodSpec
-                .methodBuilder(name)
-                .addModifiers(Modifier.PRIVATE, Modifier.STATIC)
-                .returns(void.class)
-                .addParameter(Context.class, com.teachonmars.modules.autoContext.annotation.Constant.contextParameter);
-    }
-
-    private void addCall(MethodSpec.Builder method, Element element) {
-        method.addStatement("$T.$L($L)", element.getEnclosingElement().asType(), element.getSimpleName(), com.teachonmars.modules.autoContext.annotation.Constant.contextParameter);
+    private String buildNoPriorityMethodName() {
+        return "no" + Constant.baseNameCommonMethod.substring(0, 1).toUpperCase() + Constant.baseNameCommonMethod.substring(1);
     }
 }
