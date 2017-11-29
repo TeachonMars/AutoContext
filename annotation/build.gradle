@@ -8,5 +8,4 @@ ext {
     pomPackaging = 'jar'
 }
 
-apply from: "${rootProject.projectDir}/scripts/install.gradle"
-apply from: "${rootProject.projectDir}/scripts/bintray.gradle"
+apply from: "${rootProject.projectDir}/scripts/publish.gradle"
